@@ -1,0 +1,41 @@
+version: "2"
+services:
+  #BUILD DA NOSSA API
+  api:
+    build: ./Services/PHP7
+    restart: always
+    volumes:
+      - ./app:/var/www/html
+    ports:
+      - "80:80"
+    links:
+      - mysql
+      - memcache
+  
+  #CONTAINER BAIXADO DE MYSQL
+  mysql:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=superlogica
+    volumes:
+      - ./data/db:/var/lib/mysql
+  
+  #SOBE E EXECUTA E RESTAURA UM DUMP DA TABELA
+  dump:
+    build: Services/MySQLDUMP
+    volumes:
+      - ./Services/MySQLDUMP:/var/db/
+    command: sh -c "sleep 10 && /usr/bin/mysql -h mysql -uroot -proot superlogica < /var/db/db.sql"
+    depends_on:
+      - mysql
+  
+  #SERVICO DO MEMCACHE
+  memcache:
+    build: Services/Memcache
+    ports:
+      - "11211:11211"
+    command: memcached
