@@ -24,7 +24,7 @@ services:
     volumes:
       - ./data/db:/var/lib/mysql
   
-  #SOBE E EXECUTA E RESTAURA UM DUMP DA TABELA
+  #SOBE E RESTAURA UM DUMP DO BANCO
   dump:
     build: Services/MySQLDUMP
     volumes:
