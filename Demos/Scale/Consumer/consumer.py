@@ -7,8 +7,8 @@ import smtplib as s
 import pika
 import time
 
-email_user = "@gmail.com"
-email_pass = ""
+email_user = "nosedive.flashblade@gmail.com"
+email_pass = "SistemaFoda"
 
 def getsmtpconnection():
     conn = s.SMTP('smtp.gmail.com', 587)
@@ -18,32 +18,28 @@ def getsmtpconnection():
 
     return conn
 
-def sendemail(body):
-
+def sendemail(content):
+    print "Enviando e-mail para: %r" % content
+    body = json.loads(content)
     conn = getsmtpconnection()
 
     FROM = email_user
-    TO = body.to
-    SUBJECT = body.message
-    CONTENT = body.message
+    TO = body['to']
+    SUBJECT = body['message']
+    CONTENT = body['message']
 
     message = MIMEMultipart()
     message['From'] = FROM
     message['To'] = TO
     message['Subject'] = SUBJECT
-    message.attach(MIMEText(text, 'plain'))
+    message.attach(MIMEText(body['message'], 'plain'))
     email = message.as_string()
 
     return conn.sendmail(FROM, TO, email)
 
-
-def parsejson(data):
-    return json.loads(data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-
 def callback(ch, method, properties, body):
-    print " [x] Enviando %r" % (body)
-    sendemail(parsejson(body))
-
+    print "Enviando e-mail para: %r" % content
+    #sendemail(body)
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 while True:
@@ -51,10 +47,8 @@ while True:
         credentials = pika.PlainCredentials('rabbitmq', 'rabbitmq')
         connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq', 5672, '/', credentials))
         channel = connection.channel()
-
+        time.sleep(2)
         channel.queue_declare(queue='hello')
-
-
 
         channel.basic_consume(callback,
                               queue='hello',

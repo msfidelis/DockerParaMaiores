@@ -21,7 +21,12 @@ services:
     links:
       - rabbitmq
 
+    depends_on:
+      - rabbitmq
+
   consumer:
     build: ./Consumer
     links:
+      - rabbitmq
+    depends_on:
       - rabbitmq
