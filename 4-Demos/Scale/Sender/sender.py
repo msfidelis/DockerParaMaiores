@@ -4,6 +4,7 @@ import time
 from random import choice
 from string import ascii_uppercase
 
+#Define uma mensagem aleatoria
 def randomWord():
         return ''.join(choice(ascii_uppercase) for i in range(12))
 
@@ -13,6 +14,7 @@ while True:
                 connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq', 5672, '/', credentials))
                 message = randomWord()
 
+                #Modelo de mensagem
                 content = '{"to": "msfidelis01@gmail.com", "message": "%s"}' % message
 
                 channel = connection.channel()

@@ -1,25 +1,27 @@
 #!/usr/bin/env python
-import json
-from collections import namedtuple
+# Esse script terá o papel de consumir recursos do RabbitMQß
+
+import json, pika, time
+import smtplib as s
 from email.mime.text import MIMEText
 from email.MIMEMultipart import MIMEMultipart
-import smtplib as s
 from amqpstorm import Connection
-import pika
-import time
 
-email_user = "nosedive.flashblade@gmail.com"
-email_pass = "SistemaFoda"
+email_user = ""
+email_pass = ""
+email_smtp = "smtp.gmail.com"
 
+#Retorna uma conexão com o servidor SMTPß
 def getsmtpconnection():
-    conn = s.SMTP('smtp.gmail.com', 587)
+    conn = s.SMTP(email_smtp, 587)
     conn.starttls()
     conn.ehlo
     conn.login(email_user, email_pass)
 
     return conn
 
-def sendemail(content):
+#Envia o email com o corpo do conteudo
+def sendemail(content):sdas
     print "Enviando e-mail para: %r" % content
     body = json.loads(content)
     conn = getsmtpconnection()
@@ -37,11 +39,6 @@ def sendemail(content):
     email = message.as_string()
 
     return conn.sendmail(FROM, TO, email)
-
-def callback(ch, method, properties, body):
-    print "Enviando e-mail para: %r" % content
-    #sendemail(body)
-    ch.basic_ack(delivery_tag = method.delivery_tag)
 
 while True:
     time.sleep(3)
