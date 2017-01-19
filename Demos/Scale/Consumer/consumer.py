@@ -4,6 +4,7 @@ from collections import namedtuple
 from email.mime.text import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 import smtplib as s
+from amqpstorm import Connection
 import pika
 import time
 
@@ -43,17 +44,20 @@ def callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 while True:
+    time.sleep(3)
     try:
-        credentials = pika.PlainCredentials('rabbitmq', 'rabbitmq')
-        connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq', 5672, '/', credentials))
-        channel = connection.channel()
-        time.sleep(2)
-        channel.queue_declare(queue='hello')
-
-        channel.basic_consume(callback,
-                              queue='hello',
-                              no_ack=True)
-
-        channel.start_consuming()
+        while True:
+            connection = Connection('rabbitmq', 'rabbitmq', 'rabbitmq')
+            channel = connection.channel()
+            channel.queue.declare('hello')
+            result = channel.basic.get(queue='hello', no_ack=True)
+            if not result:
+                print("Channel Empty.")
+                break
+            print("Message:", result['body'])
+            channel.basic.ack(result['method']['delivery_tag'])
+            channel.confirm_delivery(nowait=True)
+        channel.close()
+        connection.close()
     except Exception as e:
         pass

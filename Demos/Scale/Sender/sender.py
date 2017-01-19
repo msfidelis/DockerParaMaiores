@@ -9,7 +9,6 @@ def randomWord():
 
 while True:
         try:
-                time.sleep(1)
                 credentials = pika.PlainCredentials('rabbitmq', 'rabbitmq')
                 connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq', 5672, '/', credentials))
                 message = randomWord()
@@ -23,7 +22,8 @@ while True:
                         body=content)
                 print(" [x] Enviada a mensagem %s ") % content
                 connection.close()
+                time.sleep(0.5)
 
         except Exception as e:
-                print e # coding=utf-8
+                print e
                 pass
