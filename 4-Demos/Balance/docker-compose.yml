@@ -1,0 +1,15 @@
+version: '2'
+services:
+  nginx-proxy:
+    build: Docker/proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    links:
+      - web
+  web:
+    build: Docker/web
+    command: bash -c "npm install; nodemon app.js"
+    volumes:
+      - ./app/:/usr/src/app

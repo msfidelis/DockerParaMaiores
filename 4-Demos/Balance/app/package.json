@@ -1,0 +1,21 @@
+{
+  "name": "node-app",
+  "version": "1.0.0",
+  "description": "Aplicação de Teste para Kubernetes",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "author": "Matheus Fidelis",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.14.0",
+    "mongoose": "4.7.7",
+    "nedb": "^1.1.2",
+    "nodemon": "^1.10.2",
+    "express-load": "^1.1.15",
+    "body-parser": "1.15.2",
+    "mocha": "^3.2.0",
+    "supertest": "^2.0.1"
+  }
+}
