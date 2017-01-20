@@ -6,7 +6,7 @@ module.exports = function(app) {
   */
   app.get('/api/hostname', function (req, res) {
     var os = require('os');
-    return res.json(os.hostname());
+    return res.json({'hostname':os.hostname()});
   });
 
   /**

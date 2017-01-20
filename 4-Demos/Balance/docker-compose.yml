@@ -1,15 +1,16 @@
 version: '2'
 services:
-  nginx-proxy:
-    build: Docker/proxy
+  web:
+    image: jwilder/nginx-proxy
     ports:
       - "80:80"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-    links:
-      - web
-  web:
+  api:
     build: Docker/web
     command: bash -c "npm install; nodemon app.js"
     volumes:
       - ./app/:/usr/src/app
+
+    environment:
+      - VIRTUAL_HOST=localhost
